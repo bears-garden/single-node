@@ -73,11 +73,11 @@ describe("single-node", function() {
         expect(p.data).toEqual(2);
     });
 
-    it( "#delete", function(){
+    it( "#remove", function(){
         let l = SNode.insert(null, 1);
         l = SNode.insert(l, 2);
         l = SNode.insert(l, 3 );
-        l = SNode.delete(l, 1);
+        l = SNode.remove(l, 1);
         let count = 0;
         let node = 3;
         for( let cur = l; cur !== null; cur = cur.next ){
@@ -86,7 +86,7 @@ describe("single-node", function() {
             count++;
         }
         expect( count ).toEqual( 2 );
-        l = SNode.delete( l, 2 );
+        l = SNode.remove( l, 2 );
         count = 0;
         node = 3;
         for( let cur = l; cur !== null; cur = cur.next ){
@@ -97,10 +97,10 @@ describe("single-node", function() {
         expect( count).toEqual( 1 );
     });
 
-    it( "#delete head", function() {
+    it( "#remove head", function() {
         let l = null;
         l = SNode.insert(l, 1);
-        l = SNode.delete(l, 1);
+        l = SNode.remove(l, 1);
         expect( l ).toEqual( null );
     })
 

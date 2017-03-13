@@ -76,7 +76,7 @@ class SingleNode{
      * @param obj - item to remove
      * @returns {*} - returns updated n
      */
-    static delete( n, obj ){
+    static remove( n, obj ){
         let p = null;
 
         p = SingleNode.find( n, obj );
