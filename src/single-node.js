@@ -17,30 +17,45 @@ class SingleNode{
      * @param obj - item
      * @returns {*} - node with item
      */
-    static search_node( l, obj ){
+    static find(l, obj ){
         if( l === null ){
             return null;
         }
         if( l.data === obj ){
             return l;
         }else{
-            return SingleNode.search_node( l.next, obj );
+            return SingleNode.find( l.next, obj );
         }
     };
 
     /**
-     * insert_node
+     * insert
      * @param n - node where to insert from - will be the next node
      * @param obj - item
-     * @returns {SingleNode} - new node - with n as next
+     * @returns {SingleNode} - new node
      */
-    static insert_node( n, obj ){
-        return new SingleNode( { data: obj, next: n } );
+    static insert(head, obj ){
+        return new SingleNode( { data: obj, next: head } );
     };
 
     /**
+     * append
+     * @param node - insert after this node
+     * @param obj
+     * @returns {*} returns new node
+     */
+    static append( node, obj ){
+        if( node === null ){
+            return SingleNode.insert( node, obj );
+        }else{
+            node.next = SingleNode.insert( null, obj );
+            return node.next;
+        }
+    }
+
+    /**
      * predecessor
-     * @param n - node where to start search
+     * @param n - node where to start find
      * @param obj - item to find
      * @returns {*} - node before item
      */
@@ -61,10 +76,10 @@ class SingleNode{
      * @param obj - item to remove
      * @returns {*} - returns updated n
      */
-    static delete_node( n, obj ){
+    static delete( n, obj ){
         let p = null;
 
-        p = SingleNode.search_node( n, obj );
+        p = SingleNode.find( n, obj );
         if( p !== null ){
             let pred = SingleNode.predecessor(n, obj );
             if( pred === null ){

@@ -1,10 +1,11 @@
 {
-  "name": "bg-single-node",
+  "name": "@bears-garden3/bg-single-node",
   "version": "0.0.1",
   "description": "simple single node implementation",
   "main": "lib/index.js",
   "scripts": {
     "build": "babel src -d lib",
+    "pretest": "npm run build",
     "test": "jasmine"
   },
   "engines":{
