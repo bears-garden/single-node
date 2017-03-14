@@ -1,6 +1,6 @@
 {
   "name": "bg-single-node",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "simple single node implementation",
   "main": "lib/index.js",
   "scripts": {
