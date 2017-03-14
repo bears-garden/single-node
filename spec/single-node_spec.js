@@ -4,16 +4,17 @@
 
 describe("single-node", function() {
     "use strict";
-    let SNode = require("../lib/index");
+    let Node = require("../lib/index");
+    let UuidV1 = require("uuid/v1");
 
     it("#ctor defaults", function() {
-        let node = new SNode();
+        let node = new Node();
         expect( node.next ).toEqual( null );
         expect( node.data ).toEqual( null );
     });
 
     it( "#insert empty", function() {
-        let l = SNode.insert(null, 1);
+        let l = Node.insert(null, 1);
         expect( l.data ).toEqual( 1 );
         expect( l.next ).toEqual( null );
     });
@@ -21,7 +22,7 @@ describe("single-node", function() {
     it( "#insert multiple ", function() {
         let l = null;
         for( let idx = 1; idx < 11; idx++ ) {
-            l = SNode.insert(l, idx);
+            l = Node.insert(l, idx);
         }
         let n = l;
         for( let idx = 10; idx > 0; idx-- ){
@@ -31,16 +32,16 @@ describe("single-node", function() {
     });
 
     it( "#append empty", function() {
-        let l = SNode.append(null, 1);
+        let l = Node.append(null, 1);
         expect( l.data ).toEqual( 1 );
         expect( l.next ).toEqual( null );
     });
 
     it( "#append multiple ", function() {
-        let l = SNode.insert( null, 1 );
+        let l = Node.insert( null, 1 );
         let tail = l;
         for( let idx = 2; idx < 11; idx++ ) {
-            tail = SNode.append(tail, idx);
+            tail = Node.append(tail, idx);
         }
         let n = l;
         for( let idx = 1; idx < 11; idx++ ){
@@ -49,67 +50,124 @@ describe("single-node", function() {
         }
     });
 
-    it( "#find", function() {
-        let l = SNode.insert( null, 1);
-        l = SNode.insert(l, 2);
-        let s1 = SNode.find(l, 1);
+    it( "#find_node", function() {
+        let l = Node.insert( null, 1);
+        l = Node.insert(l, 2);
+        let s1 = Node.find_node(l, 1 );
         expect( s1.data ).toEqual( 1 );
-        let s2 = SNode.find( l, 2);
+        let s2 = Node.find_node( l, 2 );
         expect( s2.data ).toEqual( 2 );
     });
 
     it( "#predecessor", function() {
-        let l = SNode.insert(null, 1);
-        l = SNode.insert(l, 2);
-        l = SNode.insert(l, 3);
-        l = SNode.insert(l, 4);
-        let p = SNode.predecessor(l, 4);
+        let l = Node.insert(null, 1);
+        l = Node.insert(l, 2);
+        l = Node.insert(l, 3);
+        l = Node.insert(l, 4);
+        let p = Node.predecessor(l, 4);
         expect(p).toEqual(null);
-        p = SNode.predecessor(l, 3);
+        p = Node.predecessor(l, 3);
         expect(p.data).toEqual(4);
-        p = SNode.predecessor(l, 2);
+        p = Node.predecessor(l, 2);
         expect(p.data).toEqual(3);
-        p = SNode.predecessor(l, 1);
+        p = Node.predecessor(l, 1);
         expect(p.data).toEqual(2);
     });
 
     it( "#remove", function(){
-        let l = SNode.insert(null, 1);
-        l = SNode.insert(l, 2);
-        l = SNode.insert(l, 3 );
-        l = SNode.remove(l, 1);
-        let count = 0;
+        let l = Node.insert(null, 1);
+        l = Node.insert(l, 2);
+        l = Node.insert(l, 3);
+        l = Node.remove(l, 1);
+        let arrValues = Node.toArray( l );
         let node = 3;
-        for( let cur = l; cur !== null; cur = cur.next ){
-            expect( cur.data ).toEqual( node );
-            node--;
-            count++;
-        }
-        expect( count ).toEqual( 2 );
-        l = SNode.remove( l, 2 );
-        count = 0;
+        arrValues.forEach( function( v ){
+            expect( v ).toBe( node--);
+        });
+        expect( Node.size(l) ).toEqual( 2 );
+
+        l = Node.remove( l, 2 );
         node = 3;
-        for( let cur = l; cur !== null; cur = cur.next ){
-            expect( cur.data).toEqual( node );
-            node--;
-            count++;
-        }
-        expect( count).toEqual( 1 );
+        arrValues = Node.toArray( l );
+        arrValues.forEach( function(v){
+            expect(v).toBe( node-- );
+        });
+        expect( Node.size(l) ).toEqual( 1 );
     });
 
     it( "#remove head", function() {
         let l = null;
-        l = SNode.insert(l, 1);
-        l = SNode.remove(l, 1);
+        l = Node.insert(l, 1);
+        l = Node.remove(l, 1);
         expect( l ).toEqual( null );
     })
 
     it( "#size", function(){
         let l = null;
-        l = SNode.insert(l, 1);
-        l = SNode.insert(l, 2);
-        expect( SNode.size( l )).toEqual( 2 );
-        l = SNode.insert(l, 3 );
-        expect( SNode.size( l ) ).toEqual( 3 );
+        l = Node.insert(l, 1);
+        l = Node.insert(l, 2);
+        expect( Node.size( l )).toEqual( 2 );
+        l = Node.insert(l, 3 );
+        expect( Node.size( l ) ).toEqual( 3 );
     });
+
+    it( "#create_node", function() {
+        let l = Node.create_node( 1 );
+        expect( l.data).toBe( 1 );
+        expect( l.next ).toBe( null );
+    });
+
+    it( "#insert_node", function() {
+        let l = Node.create_node( 1 );
+        let node = Node.create_node( 2 );
+        let ret = Node.insert_node( l, node );
+        expect( Node.size(ret) ).toBe( 2 );
+        expect( node.next ).toBe( l );
+        expect( l.next ).toBe( null );
+        expect( ret ).toBe( node );
+    });
+
+    it( "#append_node", function() {
+        let l = Node.create_node( 1 );
+        let node = Node.create_node( 2 );
+        let ret = Node.append_node( l, node );
+        expect( Node.size( l ) ).toBe( 2 );
+        expect( ret ).toBe( node );
+        expect( l.next ).toBe( node );
+        expect( node.next ).toBe( null );
+    });
+
+    function equalsID( l, r ){ return l.id === r.id; };
+
+    it( "#find_node with callback", function() {
+        let values = new Array(10);
+        for( let idx = 0; idx < 10; idx++ ){
+            values[idx] = { id:UuidV1() };
+        }
+        let head = null;
+        for( let idx = 0; idx < 10; idx++ ){
+            let node = Node.create_node( values[idx]);
+            head = Node.insert_node( head, node );
+        }
+
+        let node = Node.find_node( head, values[6], equalsID );
+        expect( node.data ).toBe( values[6] );
+    });
+
+    it("#remove_node", function() {
+        let values = new Array(10);
+        for( let idx = 0; idx < 10; idx++ ){
+            values[idx] = { id:UuidV1() };
+        }
+        let head = null;
+        for( let idx = 0; idx < 10; idx++ ){
+            let node = Node.create_node( values[idx]);
+            head = Node.insert_node( head, node );
+        }
+        let val = values[3];
+        let found_node = Node.find_node( head, val, equalsID );
+        expect( found_node.data ).toBe( val );
+        head = Node.remove_node( head, found_node, equalsID );
+        expect( Node.size( head ) ).toBe(9);
+    })
 });

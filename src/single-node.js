@@ -1,30 +1,41 @@
 /**
  * Created by arthuranderson on 3/13/17.
  */
-const defaults = require('lodash.defaults');
+const defaults = require("lodash.defaults");
+const isFunction = require("lodash.isfunction");
+
+function defComparer( left, right ){
+    "use strict";
+    return left === right;
+};
 
 class SingleNode{
     constructor( obj ){
-        let defObj = { next: null, data:null};
+        let defObj = { next: null, data:null };
         obj = defaults( obj, defObj );
         this.next = obj.next;
         this.data = obj.data;
     };
 
+    static create_node( d ){
+        return new SingleNode({next:null, data:d} );
+    }
     /**
      * search_node
-     * @param l - list
+     * @param head - list
      * @param obj - item
      * @returns {*} - node with item
      */
-    static find(l, obj ){
-        if( l === null ){
+    static find_node(head, obj, comparer ){
+        comparer = ( isFunction( comparer ) ) ? comparer: defComparer;
+
+        if( head === null ){
             return null;
         }
-        if( l.data === obj ){
-            return l;
+        if( comparer( head.data, obj ) ){
+            return head;
         }else{
-            return SingleNode.find( l.next, obj );
+            return SingleNode.find_node( head.next, obj, comparer );
         }
     };
 
@@ -35,74 +46,125 @@ class SingleNode{
      * @returns {SingleNode} - new node
      */
     static insert(head, obj ){
-        return new SingleNode( { data: obj, next: head } );
+        let newNode = SingleNode.create_node( obj );
+        return SingleNode.insert_node( head, newNode );
     };
 
+    static insert_node( head, node ){
+        if( !(node instanceof SingleNode) ){
+            throw new TypeError("expecting node to be SingleNode");
+        }
+        if( node.next !== null ){
+            head.next = node.next;
+        }
+        node.next = head;
+        return node;
+    }
     /**
      * append
-     * @param node - insert after this node
+     * @param cur_node - insert after this node
      * @param obj
      * @returns {*} returns new node
      */
-    static append( node, obj ){
-        if( node === null ){
-            return SingleNode.insert( node, obj );
-        }else{
-            node.next = SingleNode.insert( null, obj );
-            return node.next;
+    static append( cur_node, obj ){
+        let new_node = SingleNode.create_node(obj);
+        return SingleNode.append_node( cur_node, new_node );
+    }
+
+    static append_node( cur_node, node ){
+        if( cur_node === undefined || cur_node === null ){
+            return node;
         }
+        if( cur_node.next === null ){
+            cur_node.next = node;
+        }else{
+            node.next = cur_node.next;
+            cur_node.next = node;
+        }
+        return cur_node.next;
     }
 
     /**
      * predecessor
-     * @param n - node where to start find
-     * @param obj - item to find
+     * @param head - node where to start find_node
+     * @param obj - item to find_node
      * @returns {*} - node before item
      */
-    static predecessor( n, obj ){
-        if( n === null || n.next === null ){
+    static predecessor( head, obj, comparer ){
+        comparer = ( isFunction( comparer ) ) ? comparer: defComparer;
+
+        if( head === null || head.next === null ){
             return null;
         }
-        if( n.next.data === obj ){
-            return n;
+        if( comparer( head.next.data, obj ) ){
+            return head;
         }else{
-            return SingleNode.predecessor(n.next, obj);
+            return SingleNode.predecessor(head.next, obj, comparer);
         }
     };
+
+    static predecessor_node( head, n ){
+        if( head === null || head.next === null ){
+            return null;
+        }
+        if( head.next === n ){
+            return head;
+        }else{
+            return SingleNode.predecessor_node( head.next, n );
+        }
+    }
 
     /**
      * delete_node
-     * @param n - node to begin deletion from
+     * @param head - node to begin deletion from
      * @param obj - item to remove
      * @returns {*} - returns updated n
      */
-    static remove( n, obj ){
-        let p = null;
-
-        p = SingleNode.find( n, obj );
-        if( p !== null ){
-            let pred = SingleNode.predecessor(n, obj );
-            if( pred === null ){
-                n = p.next;
-            }else{
-                pred.next = p.next;
-            }
-        }
-        return n;
+    static remove( head, obj, comparer ){
+        let fnode = SingleNode.find_node( head, obj, comparer );
+        return SingleNode.remove_node(head, fnode);
     };
 
+    static remove_node( head, rem_node ){
+        if( rem_node === null ){
+            return head;
+        }
+        let p_node = SingleNode.predecessor_node(head, rem_node);
+        if( p_node === null ){ // the removal node is the head
+            head = rem_node.next;
+        }else {
+            p_node.next = rem_node.next;
+        }
+        return head;
+    }
     /**
      * size
-     * @param n - starting node to count
+     * @param head - starting node to count
      * @returns {number} - number of nodes from starting node
      */
-    static size( n ){
+    static size( head ){
         let count = 0;
-        for( let cur = n; cur !== null; cur = cur.next ){
+        for( let cur = head; cur !== null; cur = cur.next ){
             count++;
         }
         return count;
     };
+
+    static toArray( head ){
+        let len = SingleNode.size(head);
+        let arr = new Array(len);
+
+        for( let cur = head, idx = 0; cur !== null; cur = cur.next, idx++ ){
+            console.log( "[" + idx + ", " + JSON.stringify(cur.data) + "]");
+            arr[idx] = cur.data;
+        }
+        return arr;
+    };
+    static debugArray( head ){
+        for( let cur = head, idx = 0; cur !== null; cur = cur.next, idx++ ){
+            console.log( "[" + idx + ", " + JSON.stringify(cur.data) + "]");
+        }
+    }
 };
 
 module.exports = SingleNode;
