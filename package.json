@@ -1,6 +1,6 @@
 {
   "name": "@bears-garden/single-node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "simple single node implementation",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "posttest": "npm run-script build",
     "test": "jest",
     "test:watch": "jest --watch",
-    "prepack":"npm run-script test",
+    "prepack": "npm run-script test",
     "preversion": "npm run-script test"
   },
   "engines": {
