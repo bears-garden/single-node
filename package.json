@@ -1,6 +1,6 @@
 {
   "name": "@bears-garden/single-node",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "simple single node implementation",
   "main": "lib/index.js",
   "scripts": {
