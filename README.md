@@ -2,7 +2,7 @@
 simple single node impl
 
 # Usage
-`var Node = require("bg-single-node");`  
+`var Node = require("@bears-garden/single-node");`  
 
 
 ### insert
@@ -12,7 +12,7 @@ places the new node before the one given
 `var list = Node.insert(null,1);`  
 `list = Node.insert(list,2);`
 
-### append 
+### append
 places new node after the one given
 @returns new node  
 
