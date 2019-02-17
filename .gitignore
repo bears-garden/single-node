@@ -39,4 +39,8 @@ jspm_packages
 # Jetbrains
 .idea/
 
+# ignore the tar ball files from npm pack
 *.tgz
+
+# ignore the library compiled files. they will be build before packing.
+lib
