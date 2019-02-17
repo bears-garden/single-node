@@ -17,9 +17,15 @@ class SingleNode{
         this.data = obj.data;
     };
 
+    /**
+     * create_node
+     * @param d - data
+     * @returns {*} - new single node with data
+     */
     static create_node( d ){
         return new SingleNode({next:null, data:d} );
     }
+
     /**
      * search_node
      * @param head - list
