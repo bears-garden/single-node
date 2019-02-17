@@ -1,4 +1,4 @@
-# bg-single-node
+# @bears-garden/single-node
 simple single node impl
 
 # Usage
