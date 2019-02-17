@@ -155,14 +155,13 @@ class SingleNode{
         let arr = new Array(len);
 
         for( let cur = head, idx = 0; cur !== null; cur = cur.next, idx++ ){
-            console.log( "[" + idx + ", " + JSON.stringify(cur.data) + "]");
             arr[idx] = cur.data;
         }
         return arr;
     };
     static debugArray( head ){
         for( let cur = head, idx = 0; cur !== null; cur = cur.next, idx++ ){
-            console.log( "[" + idx + ", " + JSON.stringify(cur.data) + "]");
+            console.log( "[ idx=" + idx + ", data=" + JSON.stringify(cur.data) + "]");
         }
     }
 };
